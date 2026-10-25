@@ -290,15 +290,17 @@
       if (state.tigernutQty > 0) itemsList.push(`${state.tigernutQty}x Tigernut Drink (350ml)`);
       const itemsString = itemsList.join(', ');
 
+      // Payload matching your exact Google Sheet column sequence
       const orderData = {
         dateTime: new Date().toLocaleString(),
+        orderRef: orderRef,
         customerName: name,
         phone: phone,
-        location: location + (address ? ` (${address})` : ''),
         items: itemsString,
+        location: location + (address ? ` (${address})` : ''),
+        timing: `${formattedDate} (${chosenWindow})`,
         totalAmount: subtotal,
-        paymentMethod: paymentMethod,
-        timing: `${chosenDate} [${chosenWindow}]`
+        paymentMethod: paymentMethod
       };
 
       const submitBtn = document.getElementById('submit-btn');
