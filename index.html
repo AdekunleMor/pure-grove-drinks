@@ -105,7 +105,7 @@
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-semibold text-stone-700 mb-1">Your Full Name *</label>
-          <input type="text" id="cust-name" placeholder="e.g. ADEKUNLE SHERIFF" class="w-full text-sm px-3 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#5c131f]/20 focus:border-[#5c131f]">
+          <input type="text" id="cust-name" placeholder="e.g. ADEKUNLE MORAKINYO" class="w-full text-sm px-3 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#5c131f]/20 focus:border-[#5c131f]">
         </div>
 
         <div>
@@ -138,6 +138,22 @@
           <textarea id="cust-address" rows="2" placeholder="Street name, building number, closest bus stop" class="w-full text-sm px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#5c131f]/20 focus:border-[#5c131f]"></textarea>
         </div>
 
+        <!-- Delivery Date & Time Window -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-stone-700 mb-1">Preferred Date *</label>
+            <input type="date" id="cust-date" class="w-full text-xs px-2.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#5c131f]/20 focus:border-[#5c131f] bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-stone-700 mb-1">Preferred Window *</label>
+            <select id="cust-window" class="w-full text-xs px-2 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#5c131f]/20 focus:border-[#5c131f] bg-white">
+              <option value="Morning (9:00 AM - 12:00 PM)">Morning (9am - 12pm)</option>
+              <option value="Afternoon (12:00 PM - 4:00 PM)">Afternoon (12pm - 4pm)</option>
+              <option value="Evening (4:00 PM - 7:00 PM)">Evening (4pm - 7pm)</option>
+            </select>
+          </div>
+        </div>
+
         <!-- Payment Method -->
         <div>
           <label class="block text-xs font-semibold text-stone-700 mb-1">Preferred Payment Method *</label>
@@ -153,14 +169,17 @@
           </div>
         </div>
 
-        <!-- Bank Details Card[cite: 3] -->
-        <div id="bank-box" class="p-3 bg-stone-50 rounded-xl border border-dashed border-stone-300 text-xs text-stone-700 space-y-1">
+        <!-- Bank Details Card -->
+        <div id="bank-box" class="p-3 bg-stone-50 rounded-xl border border-dashed border-stone-300 text-xs text-stone-700 space-y-1.5">
           <p class="font-bold text-stone-900 flex items-center justify-between">
             <span>Bank: Moniepoint</span>
             <span class="text-[10px] text-emerald-700 bg-emerald-100 font-semibold px-2 py-0.5 rounded">Instant</span>
           </p>
           <p>Account Number: <strong class="text-stone-900 font-mono text-sm">9028659836</strong>[cite: 3]</p>
           <p>Account Name: <strong class="text-stone-900">Suliat Atinuke Akintunde</strong>[cite: 3]</p>
+          <p class="text-[11px] text-amber-900 bg-amber-50 border border-amber-200/60 p-2 rounded-lg font-medium leading-snug mt-1">
+            👉 Please make transfer now and share the payment receipt here on WhatsApp for fast processing.
+          </p>
         </div>
       </div>
     </section>
@@ -194,6 +213,12 @@
       tigernutQty: 0
     };
 
+    // Initialize date picker to today and prevent past dates
+    const dateInput = document.getElementById('cust-date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
+    dateInput.min = today;
+
     function updateQty(item, delta) {
       if (item === 'zobo') {
         state.zoboQty = Math.max(0, state.zoboQty + delta);
@@ -215,6 +240,8 @@
       const phone = document.getElementById('cust-phone').value.trim();
       const location = document.getElementById('cust-location').value;
       const address = document.getElementById('cust-address').value.trim();
+      const chosenDate = document.getElementById('cust-date').value;
+      const chosenWindow = document.getElementById('cust-window').value;
       const paymentMethod = document.querySelector('input[name="paymethod"]:checked').value;
       const subtotal = (state.zoboQty * CONFIG.zoboPrice) + (state.tigernutQty * CONFIG.tigernutPrice);
 
@@ -234,6 +261,10 @@
         alert('Please select your delivery location or self pickup.');
         return;
       }
+      if (!chosenDate) {
+        alert('Please pick a preferred delivery date.');
+        return;
+      }
 
       // Generate 4-digit order ref
       const orderRef = '#PG-' + Math.floor(1000 + Math.random() * 9000);
@@ -251,7 +282,8 @@
         location: location + (address ? ` (${address})` : ''),
         items: itemsString,
         totalAmount: subtotal,
-        paymentMethod: paymentMethod
+        paymentMethod: paymentMethod,
+        timing: `${chosenDate} [${chosenWindow}]`
       };
 
       const submitBtn = document.getElementById('submit-btn');
@@ -270,7 +302,7 @@
         console.error("Sheet error:", err);
       }
 
-      // 2. Build WhatsApp Message without dashes
+      // 2. Build WhatsApp Message
       let msg = `*NEW ORDER: PURE GROVE DRINKS* 🧃\n`;
       msg += `_Real Ingredients. Great Taste._\n\n`;
       msg += `*Order Ref:* ${orderRef}\n`;
@@ -296,6 +328,7 @@
       msg += `- Payment Method: ${paymentMethod}\n`;
       if (paymentMethod.includes('Bank Transfer')) {
         msg += `- Bank Details: Moniepoint | 9028659836 (Suliat Atinuke Akintunde)\n`; //[cite: 3]
+        msg += `👉 Please make transfer now and share the payment receipt on WhatsApp for fast processing.\n`;
       }
 
       msg += `\n*DELIVERY LOGISTICS:*\n`;
@@ -303,9 +336,8 @@
       if (address) {
         msg += `- Address: ${address}\n`;
       }
-      msg += `- Timing: Today (As soon as chilled)\n`;
-      msg += `- Chilling Preference: Normal Fridge Chilled\n\n`;
-      msg += `_Placed seamlessly via Pure Grove Web App_`;
+      msg += `- Timing: ${chosenDate} (${chosenWindow})\n\n`;
+      msg += `Please confirm my order!`;
 
       // Redirect to WhatsApp
       const waUrl = `https://wa.me/${CONFIG.phone}?text=${encodeURIComponent(msg)}`;
