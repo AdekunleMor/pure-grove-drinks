@@ -175,8 +175,8 @@
             <span>Bank: Moniepoint</span>
             <span class="text-[10px] text-emerald-700 bg-emerald-100 font-semibold px-2 py-0.5 rounded">Instant</span>
           </p>
-          <p>Account Number: <strong class="text-stone-900 font-mono text-sm">9028659836</strong>[cite: 3]</p>
-          <p>Account Name: <strong class="text-stone-900">Suliat Atinuke Akintunde</strong>[cite: 3]</p>
+          <p>Account Number: <strong class="text-stone-900 font-mono text-sm">9028659836</strong></p>
+          <p>Account Name: <strong class="text-stone-900">Suliat Atinuke Akintunde</strong></p>
           <p class="text-[11px] text-amber-900 bg-amber-50 border border-amber-200/60 p-2 rounded-lg font-medium leading-snug mt-1">
             👉 Please make transfer now and share the payment receipt here on WhatsApp for fast processing.
           </p>
@@ -202,10 +202,10 @@
 
   <script>
     const CONFIG = {
-      phone: '2349028659836', //[cite: 3]
+      phone: '2349028659836',
       webhook: 'https://script.google.com/macros/s/AKfycbxGVq1s0_HmupDex_iEdfCSCa_M7bQNSDMACmc9ilkatpbsRwKUNPAYk32Chr8sR319mg/exec',
-      zoboPrice: 800, //[cite: 3]
-      tigernutPrice: 1300 //[cite: 3]
+      zoboPrice: 800,
+      tigernutPrice: 1300
     };
 
     let state = {
@@ -328,7 +328,7 @@
       msg += `- Payment Method: ${paymentMethod}\n`;
       if (paymentMethod.includes('Bank Transfer')) {
         msg += `- Bank Details: Moniepoint | 9028659836 (Suliat Atinuke Akintunde)\n`;
-        msg += `👉 Please make transfer now and share the payment receipt on WhatsApp for fast processing.\n`;
+        msg += `👉 Please make transfer now and share the payment receipt here on WhatsApp for fast processing.\n`;
       }
 
       msg += `\n*DELIVERY LOGISTICS:*\n`;
