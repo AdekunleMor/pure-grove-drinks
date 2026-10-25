@@ -291,7 +291,9 @@
       const yy = String(now.getFullYear()).slice(-2);
       const mm = String(now.getMonth() + 1).padStart(2, '0');
       const uniquePart = String(Date.now()).slice(-4);
-      const orderRef = `#PG-${yy}${mm}-${uniquePart}`;
+      // const orderRef = `#PG-${yy}${mm}-${uniquePart}`;
+      // Converts the exact millisecond timestamp to uppercase alphanumeric
+      const orderRef = '#PG-' + Date.now().toString(36).toUpperCase().slice(-5);
 
       // Build Sheet summary string
       let itemsList = [];
